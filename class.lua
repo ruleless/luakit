@@ -1,6 +1,6 @@
 local _class = {}
 
-function class(super)
+return function (super)
     local class_type = {}
 
     class_type.ctor = false
@@ -28,17 +28,20 @@ function class(super)
     local vtbl = {}
     _class[class_type] = vtbl
 
-    setmetatable(class_type, { __newindex =
-                               function(t, k, v) vtbl[k] = v end })
+    setmetatable(class_type,
+                 {
+                     __newindex = function(t, k, v) vtbl[k] = v end
+                 })
 
     if super then
-        setmetatable(vtbl, { __index =
-                             function(t, k)
-                                 local ret = _class[super][k]
-                                 vtbl[k] = ret
-                                 return ret
-                             end
-                           })
+        setmetatable(vtbl,
+                     { __index =
+                       function(t, k)
+                           local ret = _class[super][k]
+                           vtbl[k] = ret
+                           return ret
+                       end
+                     })
     end
 
     return class_type
